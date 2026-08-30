@@ -12,8 +12,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Hadith App',
+      // ضبط اتجاه النص ليصبح من اليمين إلى اليسار للغة العربية
+      builder: (context, child) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: child!,
+        );
+      },
       theme: ThemeData(
         primarySwatch: Colors.green,
+        scaffoldBackgroundColor: const Color(0xFFA78295),
       ),
       home: const HadithDetailReaderScreen(),
     );
@@ -28,7 +36,6 @@ class HadithDetailReaderScreen extends StatefulWidget {
 }
 
 class _HadithDetailReaderScreenState extends State<HadithDetailReaderScreen> {
-  // قائمة تجريبية للأحاديث
   final List<String> hadiths = [
     'إنما الأعمال بالنيات وإنما لكل امرئ ما نوى.',
     'الدين النصيحة.',
@@ -39,23 +46,30 @@ class _HadithDetailReaderScreenState extends State<HadithDetailReaderScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('تفاصيل الحديث'),
+        centerTitle: true,
       ),
-      body: ListView.builder(
-        itemCount: hadiths.length,
-        itemBuilder: (context, index) => Container(
-          margin: const EdgeInsets.all(8.0),
-          padding: const EdgeInsets.all(12.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            hadiths[index],
-            style: const TextStyle(fontSize: 16, height: 1.8),
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: ListView.builder(
+          itemCount: hadiths.length,
+          itemBuilder: (context, index) => Container(
+            margin: const EdgeInsets.only(bottom: 12.0),
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              hadiths[index],
+              style: const TextStyle(
+                fontSize: 18,
+                height: 1.6,
+                color: Colors.black87,
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 }
-
