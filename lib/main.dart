@@ -11,8 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Hadith App',
-      // ضبط اتجاه النص ليصبح من اليمين إلى اليسار للغة العربية
+      title: 'تطبيق الحديث والأذكار',
       builder: (context, child) {
         return Directionality(
           textDirection: TextDirection.rtl,
@@ -23,52 +22,112 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
         scaffoldBackgroundColor: const Color(0xFFA78295),
       ),
-      home: const HadithDetailReaderScreen(),
+      home: const MainHomeScreen(),
     );
   }
 }
 
-class HadithDetailReaderScreen extends StatefulWidget {
-  const HadithDetailReaderScreen({super.key});
+class MainHomeScreen extends StatefulWidget {
+  const MainHomeScreen({super.key});
 
   @override
-  State<HadithDetailReaderScreen> createState() => _HadithDetailReaderScreenState();
+  State<MainHomeScreen> createState() => _MainHomeScreenState();
 }
 
-class _HadithDetailReaderScreenState extends State<HadithDetailReaderScreen> {
+class _MainHomeScreenState extends State<MainHomeScreen> {
+  int _selectedIndex = 0;
+
+  // الكتب التسعة
+  final List<String> books = [
+    'صحيح البخاري',
+    'صحيح مسلم',
+    'سنن أبي داود',
+    'سنن الترمذي',
+    'سنن النسائي',
+    'سنن ابن ماجه',
+    'موطأ مالك',
+    'مسند أحمد',
+    'سنن الدارمي',
+  ];
+
+  // الأذكار
+  final List<String> azkar = [
+    'أذكار الصباح',
+    'أذكار المساء',
+    'أذكار النوم',
+    'أذكار الاستيقاظ',
+    'أذكار الصلاة',
+  ];
+
+  // الأحاديث المختارة
   final List<String> hadiths = [
     'إنما الأعمال بالنيات وإنما لكل امرئ ما نوى.',
     'الدين النصيحة.',
+    'من حسن إسلام المرء تركه ما لا يعنيه.',
+    'لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه.',
   ];
 
   @override
   Widget build(BuildContext context) {
+    List<String> currentList;
+    String currentTitle;
+
+    if (_selectedIndex == 0) {
+      currentList = books;
+      currentTitle = 'الكتب التسعة';
+    } else if (_selectedIndex == 1) {
+      currentList = azkar;
+      currentTitle = 'الأذكار';
+    } else {
+      currentList = hadiths;
+      currentTitle = 'الأحاديث';
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('تفاصيل الحديث'),
+        title: Text(currentTitle),
         centerTitle: true,
       ),
-      body: Padding(
+      body: ListView.builder(
         padding: const EdgeInsets.all(12.0),
-        child: ListView.builder(
-          itemCount: hadiths.length,
-          itemBuilder: (context, index) => Container(
-            margin: const EdgeInsets.only(bottom: 12.0),
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+        itemCount: currentList.length,
+        itemBuilder: (context, index) => Container(
+          margin: const EdgeInsets.only(bottom: 10.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: ListTile(
+            title: Text(
+              currentList[index],
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            child: Text(
-              hadiths[index],
-              style: const TextStyle(
-                fontSize: 18,
-                height: 1.6,
-                color: Colors.black87,
-              ),
-            ),
+            trailing: const Icon(Icons.arrow_forward_ios, size: 18),
+            onTap: () {},
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book),
+            label: 'الكتب التسعة',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.auto_awesome),
+            label: 'الأذكار',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.format_quote),
+            label: 'الأحاديث',
+          ),
+        ],
       ),
     );
   }
