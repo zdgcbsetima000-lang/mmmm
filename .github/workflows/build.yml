@@ -24,6 +24,9 @@ jobs:
         with:
           channel: 'stable'
 
+      - name: Create Android Project Structure
+        run: flutter create --platforms=android .
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -35,4 +38,3 @@ jobs:
         with:
           name: app-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
-
