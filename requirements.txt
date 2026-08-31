@@ -1,4 +1,5 @@
 pyrogram==2.0.106
-tgcrypto
+tgcrypto==1.2.5
+ntgcalls==1.1.0
 py-tgcalls==1.2.9
-python-dotenv
+python-dotenv==1.0.1
