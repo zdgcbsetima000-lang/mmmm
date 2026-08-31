@@ -1,4 +1,4 @@
-name: 🌿 مشغل القرآن الكريم
+name: Quran Player Bot
 
 on:
   workflow_dispatch:
@@ -19,28 +19,28 @@ jobs:
       DOWNLOAD_DIR: ./downloads
 
     steps:
-      - name: تحميل السورس
+      - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: إعداد Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: تثبيت FFmpeg
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
-      - name: تثبيت المكتبات
+      - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: تجهيز المجلدات
+      - name: Create Download Directory
         run: |
           mkdir -p downloads
 
-      - name: تشغيل مشغل القرآن
+      - name: Run Quran Player
         run: |
           python main.py
