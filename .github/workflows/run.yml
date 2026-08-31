@@ -1,0 +1,48 @@
+Entername: 🌿 مشغل القرآن الكريم
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+
+jobs:
+  quran-player:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 350
+
+    env:
+      API_ID: ${{ secrets.API_ID }}
+      API_HASH: ${{ secrets.API_HASH }}
+      PYROGRAM_SESSION: ${{ secrets.PYROGRAM_SESSION }}
+      ADMIN_IDS: ${{ secrets.ADMIN_IDS }}
+      DOWNLOAD_DIR: ./downloads
+
+    steps:
+      - name: 📥 تحميل السورس
+        uses: actions/checkout@v4
+
+      - name: 🐍 إعداد Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: ⚙️ تثبيت FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: 📦 تثبيت المكتبات
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 📁 تجهيز المجلدات
+        run: |
+          mkdir -p downloads
+
+      - name: 🚀 تشغيل مشغل القرآن
+        run: |
+          python main.py
