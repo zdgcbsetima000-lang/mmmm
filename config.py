@@ -1,7 +1,8 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+# تحميل المتغيرات من ملف env.txt
+load_dotenv("env.txt")
 
 # =========================
 # Telegram API
@@ -13,7 +14,7 @@ API_ID = int(_api_id_env) if _api_id_env and _api_id_env.isdigit() else None
 API_HASH = os.environ.get("API_HASH")
 
 # =========================
-# Pyrogram Session
+# Pyrogram / Hydrogram Session
 # =========================
 
 PYROGRAM_SESSION = os.environ.get("PYROGRAM_SESSION")
