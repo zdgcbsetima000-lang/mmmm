@@ -2,45 +2,176 @@ name: Quran Player Bot
 
 on:
   workflow_dispatch:
+
   push:
     branches:
       - main
 
+
 jobs:
+
   quran-player:
+
     runs-on: ubuntu-latest
+
     timeout-minutes: 350
 
     env:
+
       API_ID: ${{ secrets.API_ID }}
+
       API_HASH: ${{ secrets.API_HASH }}
+
       PYROGRAM_SESSION: ${{ secrets.PYROGRAM_SESSION }}
+
       ADMIN_IDS: ${{ secrets.ADMIN_IDS }}
+
       DOWNLOAD_DIR: ./downloads
 
+
     steps:
+
+      # ==========================================
+      # تحميل المشروع
+      # ==========================================
+
       - name: Checkout Source Code
+
         uses: actions/checkout@v4
 
+
+      # ==========================================
+      # Python
+      # ==========================================
+
       - name: Setup Python
+
         uses: actions/setup-python@v5
+
         with:
+
           python-version: "3.11"
 
+          cache: "pip"
+
+
+      # ==========================================
+      # FFmpeg
+      # ==========================================
+
       - name: Install System Dependencies
+
         run: |
+
           sudo apt-get update
+
           sudo apt-get install -y ffmpeg
 
+
+      # ==========================================
+      # Python Dependencies
+      # ==========================================
+
       - name: Install Python Dependencies
+
         run: |
+
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+
+          python -m pip install --no-cache-dir -r requirements.txt
+
+
+      # ==========================================
+      # Verify Packages
+      # ==========================================
+
+      - name: Verify Telegram Libraries
+
+        run: |
+
+          python - <<'PY'
+
+          import pyrogram
+
+          import pytgcalls
+
+          from pyrogram import Client
+
+          from pytgcalls import PyTgCalls
+
+          print("========================================")
+
+          print("Pyrogram:", pyrogram.__version__)
+
+          print("PyTgCalls:", getattr(pytgcalls, "__version__", "unknown"))
+
+          print("Client module:", Client.__module__)
+
+          print("PyTgCalls module:", PyTgCalls.__module__)
+
+          print("========================================")
+
+          PY
+
+
+      # ==========================================
+      # Create Download Directory
+      # ==========================================
 
       - name: Create Download Directory
+
         run: |
+
           mkdir -p downloads
 
-      - name: Run Quran Player
+          chmod 755 downloads
+
+
+      # ==========================================
+      # Check Secrets
+      # ==========================================
+
+      - name: Check Required Environment
+
         run: |
+
+          python - <<'PY'
+
+          import os
+
+          required = [
+              "API_ID",
+              "API_HASH",
+              "PYROGRAM_SESSION",
+              "ADMIN_IDS",
+          ]
+
+          missing = [
+              key
+              for key in required
+              if not os.environ.get(key)
+          ]
+
+          if missing:
+
+              print(
+                  "❌ Missing GitHub Secrets:",
+                  ", ".join(missing)
+              )
+
+              raise SystemExit(1)
+
+          print("✅ All required secrets are present.")
+
+          PY
+
+
+      # ==========================================
+      # Run Quran Player
+      # ==========================================
+
+      - name: Run Quran Player
+
+        run: |
+
           python main.py
