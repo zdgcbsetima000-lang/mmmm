@@ -1,4 +1,4 @@
-hydrogram
+pyrogram
 tgcrypto
-py-tgcalls
 python-dotenv
+git+https://github.com/pytgcalls/pytgcalls.git
