@@ -2,7 +2,6 @@ name: 🌿 مشغل القرآن الكريم
 
 on:
   workflow_dispatch:
-
   push:
     branches:
       - main
@@ -10,7 +9,6 @@ on:
 jobs:
   quran-player:
     runs-on: ubuntu-latest
-
     timeout-minutes: 350
 
     env:
