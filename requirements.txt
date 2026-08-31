@@ -1,4 +1,4 @@
-hydrogram
-tgcrypto
+Pyrogram==2.0.106
+TgCrypto
 python-dotenv
-py-tgcalls
+py-tgcalls==2.3.3
