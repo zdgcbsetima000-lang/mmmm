@@ -4,8 +4,8 @@ import re
 import uuid
 from pathlib import Path
 
-from pyrogram import Client, filters
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from hydrogram import Client, filters
+from hydrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pytgcalls import PyTgCalls
 from pytgcalls.types import MediaStream
 
@@ -258,12 +258,10 @@ async def command_handler(client, message: Message):
     command = aliases.get(command, command)
     chat_id = message.chat.id
 
-    # 1. مساعدة
     if command == "help":
         await message.reply_text(HELP_TEXT)
         return
 
-    # 2. تشغيل
     if command == "play":
         media_msg = get_replied_media(message)
         if not media_msg:
@@ -281,7 +279,6 @@ async def command_handler(client, message: Message):
             await status_msg.edit_text(f"❌ حدث خطأ أثناء التشغيل: {e}")
         return
 
-    # 3. إضافة إلى قائمة الانتظار
     if command == "add":
         media_msg = get_replied_media(message)
         if not media_msg:
@@ -302,7 +299,6 @@ async def command_handler(client, message: Message):
             await status_msg.edit_text(f"❌ حدث خطأ: {e}")
         return
 
-    # 4. التالي
     if command == "next":
         has_next = await play_next(chat_id)
         if has_next:
@@ -312,7 +308,6 @@ async def command_handler(client, message: Message):
             await message.reply_text("⏹️ لا توجد مقاطع أخرى في قائمة الانتظار.")
         return
 
-    # 5. إيقاف مؤقت
     if command == "pause":
         if chat_id in current and chat_id not in paused:
             await calls.pause_stream(chat_id)
@@ -322,7 +317,6 @@ async def command_handler(client, message: Message):
             await message.reply_text("⚠️ لا يوجد بث شغال أو هو متوقف بالفعل.")
         return
 
-    # 6. استئناف
     if command == "resume":
         if chat_id in paused:
             await calls.resume_stream(chat_id)
@@ -332,13 +326,11 @@ async def command_handler(client, message: Message):
             await message.reply_text("⚠️ البث ليس في حالة إيقاف مؤقت.")
         return
 
-    # 7. إيقاف
     if command == "stop":
         await stop_player(chat_id)
         await message.reply_text("⏹️ تم إيقاف التشغيل وتنظيف القائمة.")
         return
 
-    # 8. عرض القائمة
     if command == "queue":
         queue = queues.get(chat_id, [])
         if not queue:
@@ -351,7 +343,6 @@ async def command_handler(client, message: Message):
         await message.reply_text(text_out)
         return
 
-    # 9. تفريغ القائمة
     if command == "clear":
         queue = queues.pop(chat_id, [])
         for item in queue:
@@ -359,7 +350,6 @@ async def command_handler(client, message: Message):
         await message.reply_text("🗑️ تم مسح قائمة الانتظار.")
         return
 
-    # 10. الحالة
     if command == "status":
         curr = current.get(chat_id)
         if curr:
@@ -383,3 +373,4 @@ async def main():
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())
+
